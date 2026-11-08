@@ -1,4 +1,7 @@
-# Oh My Pi — Docker
+# Oh My Pi — Docker with Intelligence
+Fork was created to add support for the Go language server (gopls) to make use of Oh My Pi's Code Intelligence feature. I intend to use this container for projects written in different languages, hence I'll be patching in support for different language servers into the harness as time goes by. 
+
+The original author of the fork's origin is 19WAS85 and their code can be found here: [omp-docker](https://github.com/19WAS85/omp-docker). He provided a very solid foundation for me to extend and deserves all the kudos.
 
 Docker harness for [Oh My Pi](https://github.com/can1357/oh-my-pi), the AI coding agent. Packages the full OMP environment — Bun, Python, ripgrep, LSP, DAP, 32 built-in tools — inside a container image. You work on your local files; OMP runs in Docker.
 
