@@ -44,7 +44,7 @@ omp-docker "fix the race condition in src/worker.py"
 omp-docker --help
 ```
 
-Your working directory is mounted at `/work` inside the container. `~/.omp` state persists across sessions.
+Your working directory is mounted at `/work` inside the container. `~/.omp` state persists across sessions; runtime sockets under `/root/.omp/run` use container-local temporary storage.
 
 ### `omp-docker-build [args]`
 

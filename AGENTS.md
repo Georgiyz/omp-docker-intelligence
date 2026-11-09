@@ -19,7 +19,7 @@ For install, configuration, CLI usage, and architecture overview, see [README.md
 
 ## Important Notes
 
-- `~/.omp` is mounted read-write into the container for persistent agent state across runs.
+- `~/.omp` is mounted read-write into the container for persistent agent state across runs. `/root/.omp/run` is overlaid with container-local tmpfs for runtime sockets and is ephemeral.
 - `~/.gitconfig` is mounted read-only into the container for git identity (user.name/email). The Makefile auto-detects its presence — when missing, `/dev/null` is mounted instead to avoid Docker creating a directory. Git signing is configured separately in `entrypoint.sh`.
 - `~/.ssh` is mounted read-only into the container for SSH commit signing. The entrypoint copies it to `/tmp/.ssh` and sets permissions to 600 (SSH rejects configs with world-readable perms). `entrypoint.sh` then runs `git config --global` for `safe.directory`, `gpg.format=ssh`, `user.signingkey`, and `commit.gpgsign=true`. The signing key defaults to `/root/.ssh/id_ed25519` and can be overridden via the `GIT_SIGNING_KEY` environment variable.
 - Resource limits are enforced via `deploy.resources.limits` (CPU and memory).

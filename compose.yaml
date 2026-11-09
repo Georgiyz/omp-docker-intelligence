@@ -8,6 +8,10 @@ services:
       - ${GITCONFIG:-/dev/null}:/root/.gitconfig:ro
       - pip-cache:/root/.cache/pip
       - npm-cache:/root/.bun/install/cache
+    # Keep Unix-domain worker sockets on container-local storage. Host-shared
+    # filesystems may reject socket bind() calls with EINVAL.
+    tmpfs:
+      - /root/.omp/run
     environment:
       - TERM
       - LANG
