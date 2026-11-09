@@ -1,5 +1,11 @@
 # syntax=docker/dockerfile:1
-FROM oven/bun:1.3
+ARG update-token
+FROM golang:1.27.3 AS go-toolchain
+
+ARG update-token
+RUN go install golang.org/x/tools/gopls@latest
+
+FROM oven/bun:latest
 
 LABEL maintainer="Oh My Pi" \
       description="Docker harness for Oh My Pi coding agent" \
@@ -12,22 +18,18 @@ RUN apt-get update \
  && ln -sf /usr/bin/fdfind /usr/local/bin/fd \
  && rm -rf /var/lib/apt/lists/*
 
+# Keep Go available for gopls to analyze and build Go projects. Build gopls in
+# the official Go stage so the final image does not need a second compiler setup.
+COPY --from=go-toolchain /usr/local/go /usr/local/go
+COPY --from=go-toolchain /go/bin/gopls /usr/local/bin/gopls
+ENV GOROOT="/usr/local/go"
+ENV PATH="/usr/local/go/bin:/usr/local/bin:$PATH"
+
 RUN python3 -m venv /opt/omp-venv \
  && /opt/omp-venv/bin/pip install --no-cache-dir ipykernel
 ENV PATH="/opt/omp-venv/bin:$PATH"
 
 RUN bun install -g @oh-my-pi/pi-coding-agent @oh-my-pi/pi-natives
-
-RUN curl -sSf https://sh.rustup.rs -o /tmp/rustup-init.sh \
- && echo "6c30b75a75b28a96fd913a037c8581b580080b6ee9b8169a3c0feb1af7fe8caf  /tmp/rustup-init.sh" | sha256sum -c - \
- && sh /tmp/rustup-init.sh -y --default-toolchain stable --profile minimal \
- && rm /tmp/rustup-init.sh \
- && . "$HOME/.cargo/env" \
- && bun install -g @napi-rs/cli \
- && cd /root/.bun/install/global/node_modules/@anush008/tokenizers \
- && napi build --platform --release \
- && rustup self uninstall -y \
- && bun uninstall -g @napi-rs/cli
 
 COPY --chmod=0755 entrypoint.sh /usr/local/bin/entrypoint
 
