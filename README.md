@@ -36,12 +36,13 @@ OMP includes a built-in Ollama provider and discovers available models from the 
 Once installed, three commands are available from anywhere:
 
 ### `omp-docker [args]`
-Run the OMP agent in the current directory. All arguments are forwarded to the agent.
+Run the OMP agent with the current directory mounted at `/work`. All arguments are forwarded to the agent. Set `WORKSPACE_DIR` to override the directory for a particular run.
 
 ```sh
 omp-docker                          # start agent interactively
 omp-docker "fix the race condition in src/worker.py"
 omp-docker --help
+WORKSPACE_DIR=/path/to/project omp-docker
 ```
 
 Your working directory is mounted at `/work` inside the container. `~/.omp` state persists across sessions; runtime sockets under `/root/.omp/run` use container-local temporary storage.

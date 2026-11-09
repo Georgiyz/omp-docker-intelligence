@@ -83,7 +83,7 @@ install: docker.build ## Build image and create wrapper scripts
 	@mkdir -p ~/.omp ~/.local/bin
 	@for spec in $(WRAPPERS); do \
 	  name=$${spec%%:*}; target=$${spec##*:}; \
-	  printf '#!/usr/bin/env bash\nexec make -C "$(MAKE_DIR)" %s ARGS="$$*"\n' "$$target" > ~/.local/bin/"$$name"; \
+	  printf '#!/usr/bin/env bash\nexec make -C "$(MAKE_DIR)" %s WORKSPACE_DIR="$${WORKSPACE_DIR:-$$PWD}" ARGS="$$*"\n' "$$target" > ~/.local/bin/"$$name"; \
 	  chmod +x ~/.local/bin/"$$name"; \
 	done
 	@echo "Installed: $(shell echo $(WRAPPERS) | sed 's/:[^ ]*//g' | sed 's/ /, ~\//g' | sed 's/^/~/')"
