@@ -25,8 +25,11 @@ Edit `.env.default.properties` to customize settings, or set environment variabl
 | `OMP_STATE_DIR` | `$HOME/.omp` | Persistent agent state directory |
 | `SSH_DIR` | `$HOME/.ssh` | Host SSH directory (mounted read-only for commit signing) |
 | `GIT_SIGNING_KEY` | `/root/.ssh/id_ed25519` | SSH key path for commit signing |
+| `OLLAMA_BASE_URL` | `http://host.docker.internal:11434` | Ollama API endpoint reachable from the container |
 | `RESOURCE_CPUS` | `2.0` | CPU limit |
 | `RESOURCE_MEMORY` | `4g` | Memory limit |
+
+OMP includes a built-in Ollama provider and discovers available models from the configured endpoint. Start Ollama on the host, then select an `ollama/<model>` model in OMP. Override `OLLAMA_BASE_URL` in `.env.properties` or your environment if Ollama is hosted elsewhere. On Linux, Ollama must listen on an address reachable from Docker (for example, set its `OLLAMA_HOST` to `0.0.0.0:11434`); `host.docker.internal` may also need a host-gateway entry depending on your Docker setup.
 
 ## CLI Commands
 

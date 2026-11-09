@@ -13,6 +13,7 @@ services:
       - LANG
       - LC_ALL
       - GIT_SIGNING_KEY
+      - OLLAMA_BASE_URL
     # Required for iptables-based egress control (agent network sandboxing)
     cap_add:
       - NET_ADMIN
