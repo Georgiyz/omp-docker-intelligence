@@ -79,6 +79,64 @@ make uninstall       # remove CLI wrapper scripts
 make help            # show all available commands
 ```
 
+## Adding OMP Plugins and Extensions
+
+Run plugin management commands through `omp-docker` so they use the same persistent `~/.omp` state as the container. The host `omp` command may use a different state directory and leave marketplace paths that the container cannot read.
+
+### Install from a marketplace
+
+Add the marketplace once, discover its plugins, then install the selected plugin using its `plugin-name@marketplace-name` ID:
+
+```sh
+omp-docker plugin marketplace add anthropics/claude-plugins-official
+omp-docker plugin discover claude-plugins-official
+omp-docker plugin install frontend-design@claude-plugins-official
+```
+
+For example, to add the Go skills collection from `samber/cc`:
+
+```sh
+omp-docker plugin marketplace add samber/cc
+omp-docker plugin discover samber
+omp-docker plugin install cc-skills-golang@samber
+```
+
+Marketplace management commands:
+
+```sh
+omp-docker plugin marketplace list
+omp-docker plugin marketplace update samber
+omp-docker plugin list
+omp-docker plugin uninstall cc-skills-golang@samber
+```
+
+Updating a marketplace refreshes its catalog; it does not upgrade installed plugins. Use `omp-docker plugin upgrade <plugin-name@marketplace-name>` to upgrade an installed marketplace plugin.
+
+To check marketplace installs, use `omp-docker plugin list` or `/marketplace installed` inside an OMP session. `/skills installed` reports skills installed through OMP's separate skill registry; it does not list skills that come from marketplace plugins. Marketplace plugin skills are discovered by OMP at session startup. Run `/reload-plugins` or restart OMP after installing one, and invoke a skill explicitly with `/skill:<plugin-name>/<skill-name>` when needed. For example, the Go skills collection can be invoked with `/skill:cc-skills-golang/golang-security`.
+
+### Install an extension package
+
+OMP can install extension packages from a package registry or a Git repository:
+
+```sh
+omp-docker plugin install <package-name>
+omp-docker plugin install github:<owner>/<repository>
+```
+
+To use an extension checked out locally, link its directory. Paths must be visible inside the container; a directory in the mounted working tree is under `/work`:
+
+```sh
+omp-docker plugin link /work/path/to/extension
+```
+
+User-scoped installs are the default and are available across projects. Marketplace plugins can also be installed for the current project with `--scope project`:
+
+```sh
+omp-docker plugin install --scope project <plugin-name@marketplace-name>
+```
+
+After managing plugins from inside an active OMP session, run `/reload-plugins` to refresh skills, slash commands, task agents, and MCP servers. Restart the session to load newly installed tools, hooks, or extension modules. If installation was performed with `omp-docker` from the shell, start a new `omp-docker` session to load the changes.
+
 ## What's Inside
 
 - **Bun** runtime with `@oh-my-pi/pi-coding-agent` and `@oh-my-pi/pi-natives`
