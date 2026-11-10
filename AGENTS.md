@@ -7,7 +7,7 @@ For install, configuration, CLI usage, and architecture overview, see [README.md
 - `entrypoint.sh` uses `set -uo pipefail` (no errexit, since it dispatches). Both code paths use `exec` for clean signal handling (PID 1 handoff).
 - The Makefile resolves its own directory via `$(dir $(realpath $(lastword $(MAKEFILE_LIST))))` and loads env via `-include .env.default.properties` (with optional `.env.properties` for local overrides).
 - Config variables (`WORKSPACE_DIR`, `OMP_STATE_DIR`, `SSH_DIR`, etc.) are explicitly `export`ed so `docker compose` receives actual values, not just Make-internal variables.
-- `make docker.update` busts the Docker build cache by passing `--build-arg update-token=$(date +%s)`, which invalidates the `RUN omp update` step in the Dockerfile.
+- `make docker.update` busts the Docker build cache by passing `--build-arg update-token=$(date +%s)`, which invalidates the global Bun package update step in the Dockerfile.
 - `compose.yaml` uses variable expansion with defaults: `${WORKSPACE_DIR:-.}`, `${OMP_STATE_DIR:-$HOME/.omp}`, and `${SSH_DIR:-$HOME/.ssh}`.
 - Named volumes (`pip-cache`, `npm-cache`) persist package caches across container runs.
 

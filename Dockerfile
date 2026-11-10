@@ -34,7 +34,7 @@ RUN bun install -g @oh-my-pi/pi-coding-agent @oh-my-pi/pi-natives
 COPY --chmod=0755 entrypoint.sh /usr/local/bin/entrypoint
 
 ARG update-token
-RUN omp update
+RUN bun update -g @oh-my-pi/pi-coding-agent @oh-my-pi/pi-natives
 
 WORKDIR /work
 
